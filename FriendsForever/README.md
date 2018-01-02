@@ -1,12 +1,14 @@
 ﻿# Friends Forever
 
-Current Version: 1.0.0
+Current Version: 1.0.1
+Dependancies: SMAPI 1.10+
+[Download Here](https://rd.nexusmods.com/stardewvalley/mods/1738)
 
-Configuration:
+####Configuration:
 There are only three different true/false options in config.json:
 
 * AffectSpouses: Whether spouses will be prevented from experiencing friendship
-decay. Default: true
+decay. Default: false
 * AffectDates: Whether dates will be prevented from experiencing friendship decay.
 Dates are anyone you have given a bouquote to and you are still unmarried.
 Default: true

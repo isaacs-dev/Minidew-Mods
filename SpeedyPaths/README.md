@@ -1,8 +1,10 @@
 ﻿# Speedy Paths
 
-Current Version 1.0.0
+Current Version: 1.0.0
+Dependancies: SMAPI 1.10+
+Download: Not available; to be released soon.
 
-Configuration:
+####Configuration:
 Most of the options in config.json have to do with specific flooring boosts and
 boosts designed to occur in the world map. Specific flooring boosts should
 hopefully be obvious from the file.
@@ -27,6 +29,10 @@ flooring id (if it exists) and the tile index underneath the player. These value
 are useful for adding new speed locations to the mod.
 
 
-##### Other Info:
+#### Other Info:
 This mod technically supports negative values as well (it will even change the
 effect icon).
+
+#### Thanks to:
+Entoarox for the FasterPaths mod and EntoaroxFramework. Both mods assisted me in
+figuring out what was required to make this mod.

@@ -8,7 +8,7 @@ using StardewValley;
 namespace IsaacS.FriendsForever {
     public class Config {
         /// <summary>Whether spouses should be prevented from having friendship decay.</summary>
-        public bool AffectSpouses { get; set; } = true;
+        public bool AffectSpouses { get; set; } = false;
         /// <summary>Whether dates should be prevented from having friendship decay. Does nothing if married.</summary>
         public bool AffectDates { get; set; } = true;
         /// <summary>Whether everyone else should be prevented from having friendship decay. Effects everyone
