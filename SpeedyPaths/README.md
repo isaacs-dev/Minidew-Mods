@@ -1,10 +1,12 @@
 ﻿# Speedy Paths
 
 Current Version: 1.0.0
+
 Dependancies: SMAPI 1.10+
+
 Download: Not available; to be released soon.
 
-####Configuration:
+#### Configuration:
 Most of the options in config.json have to do with specific flooring boosts and
 boosts designed to occur in the world map. Specific flooring boosts should
 hopefully be obvious from the file.
