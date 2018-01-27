@@ -10,6 +10,8 @@ namespace IsaacS.SpeedyPaths {
         //!The config file for various speed boosts. If a boost is 0, it is considered disabled and won't be given.
         //!The general boost will be given instead if it is enabled.
 
+        /// <summary>Whether any boost other than the general boost should show a status effect icon.</summary>
+        public bool ShowStatusEffect = true;
         /// <summary>The boost given to a player when they aren't on top of anything.</summary>
         public int GeneralBoost = 0;
         /// <summary>The boost given to the player when inside of the bath house.</summary>
@@ -126,7 +128,7 @@ namespace IsaacS.SpeedyPaths {
             107, 300, 302 //Small Beach Bridge
         };
         /// <summary>The tile indexes of sand paths tiles in the desert.</summary>
-        readonly int[] desertPathIds = { 64, 82, 49, 48, 80 };
+        readonly int[] desertPathIds = { 64, 66, 82, 49, 48, 80, 142 };
         /// <summary>The tile indexes of road tiles in the desert.</summary>
         readonly int[] desertRoadIds = { 174, 206 };
         //!The various buffs for usage. Null if they disabled:
@@ -143,6 +145,8 @@ namespace IsaacS.SpeedyPaths {
         /// it is added to the character directly and removed when needed (this way there isn't a constant effect on
         /// the player).</summary>
         bool generalBuffActive = false;
+        /// <summary>The current buff being applied to the user. Only is used when ShowStatusEffect is false.</summary>
+        Buff currentBuff = null;
 
         /// <summary>Generates the buff object from the config values. This function could later be used to
         /// allow for dynamic config editing. The only option that isn't dynamic is EnableCommand.</summary>
@@ -182,6 +186,7 @@ namespace IsaacS.SpeedyPaths {
         private void EveryDay(object sender, EventArgs e) {
             //Buffs are cleared at the start of every day, so the general buff is definitely not active:
             generalBuffActive = false;
+            currentBuff = null;
         }
 
         /// <summary>Updates the current speed boost based on the player's location.</summary>
@@ -193,6 +198,14 @@ namespace IsaacS.SpeedyPaths {
             Buff newBoost = GetBoost();
 
             if (newBoost == null) {
+                //currentBuff is only set if we are managing the speed buffs differently due to ShowStatusEffect being
+                //false.
+                if (currentBuff != null) {
+                    currentBuff.removeBuff();
+                    Game1.player.buffs.Remove(currentBuff);
+                    currentBuff = null;
+                }
+            
                 //If the general buff isn't active, then that means we need to add it:
                 if (!generalBuffActive && config.GeneralBoost != 0) {
                     generalBuff.addBuff();
@@ -207,10 +220,22 @@ namespace IsaacS.SpeedyPaths {
                     generalBuffActive = false;
                 }
 
-                //To prevent the display from removing the buff:
-                newBoost.millisecondsDuration = 0;
-                //Add the buff, which the display will already remove the old one and add this one:
-                Game1.buffsDisplay.addOtherBuff(newBoost);
+                if (config.ShowStatusEffect) {
+                    //To prevent the display from removing the buff:
+                    newBoost.millisecondsDuration = 0;
+                    //Add the buff, which the display will already remove the old one and add this one:
+                    Game1.buffsDisplay.addOtherBuff(newBoost);
+                //If we are not showing status effects to the player, we have to manage the boosts in a different way:
+                } else if (currentBuff != newBoost) {
+                    if (currentBuff != null) {
+                        currentBuff.removeBuff();
+                        Game1.player.buffs.Remove(currentBuff);
+                    }
+                    
+                    newBoost.addBuff();
+                    Game1.player.buffs.Add(newBoost);
+                    currentBuff = newBoost;
+                }
             }
         }
 
@@ -275,11 +300,13 @@ namespace IsaacS.SpeedyPaths {
                     return woodBridgeBuff;
             } else if (worldLocation.name == "Desert") {
                 foreach (int roadId in desertRoadIds) {
-                    return desertRoadBuff;
+                    if (tile == roadId)
+                        return desertRoadBuff;
                 }
 
                 foreach (int pathId in desertPathIds) {
-                    return dirtPathBuff;
+                    if (tile == pathId)
+                        return dirtPathBuff;
                 }
             } else if (worldLocation.name.StartsWith("Beach", StringComparison.Ordinal)) {
                 foreach (int dockId in dockIds) {

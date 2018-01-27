@@ -20,6 +20,7 @@ The condition for various world boosts:
 * TownSquareBoost: on the stone paths in the town square
 
 Other options:
+* EnableStatusEffect: Whether the status effect icon should show up on screen.
 * GeneralBoost: The boost given by default if no other takes presedent. Any boost
 with a value of 0 will be ignored and use the general boost instead. If the general
 boost is 0, you will walk at vanilla speeds when off-path.

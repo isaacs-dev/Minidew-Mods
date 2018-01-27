@@ -1,6 +1,6 @@
 ﻿# Friends Forever
 
-Current Version: 1.0.1
+Current Version: 1.1.0
 
 Dependancies: SMAPI 1.10+
 
@@ -10,10 +10,11 @@ Dependancies: SMAPI 1.10+
 There are only three different true/false options in config.json:
 
 * AffectSpouses: Whether spouses will be prevented from experiencing friendship
-decay. Default: false
+decay.
 * AffectDates: Whether dates will be prevented from experiencing friendship decay.
 Dates are anyone you have given a bouquote to and you are still unmarried.
-Default: true
 * AffectEveryoneElse: Whether everyone else will be prevented from experiencing
 friendship decay. If you are married, this includes people you could be dating.
-Default: true
+* AffectAnimals: Whether farm animals are prevented from experiencing friendship
+decay. They will still lose friendship if you leave them outside or forget to
+feed them.
