@@ -88,7 +88,7 @@ namespace IsaacS.FriendsForever {
             if (player.currentLocation.name != "FarmHouse")
                 return;
 
-            var bedLocation = (player.currentLocation as FarmHouse).getBedSpot().ToVector2();
+            var bedLocation = (player.currentLocation as FarmHouse).getBedSpot();
             //The bed location is in number of tiles where-as player position is pixels. 
             if (Math.Abs(bedLocation.X * Game1.tileSize - player.position.X) < Game1.tileSize
                 && Math.Abs(bedLocation.Y * Game1.tileSize - player.position.Y) < Game1.tileSize)
@@ -110,7 +110,7 @@ namespace IsaacS.FriendsForever {
             foreach (var animal in animals) {
                 if (!animalFriendships.ContainsKey(animal))
                     continue;
-
+                
                 animal.friendshipTowardFarmer += (10 - animalFriendships[animal] / 200);
             }
         }
