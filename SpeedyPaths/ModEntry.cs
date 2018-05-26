@@ -200,7 +200,7 @@ namespace IsaacS.SpeedyPaths {
             if (newBoost == null) {
                 //currentBuff is only set if we are managing the speed buffs differently due to ShowStatusEffect being
                 //false.
-                if (currentBuff != null) {
+                if (currentBuff != null && !config.ShowStatusEffect) {
                     currentBuff.removeBuff();
                     Game1.player.buffs.Remove(currentBuff);
                     currentBuff = null;
@@ -215,8 +215,8 @@ namespace IsaacS.SpeedyPaths {
             } else {
                 //Remove the general buff if it is active:
                 if (generalBuffActive && config.GeneralBoost != 0) {
-                    generalBuff.removeBuff();
                     Game1.player.buffs.Remove(generalBuff);
+                    generalBuff.removeBuff();
                     generalBuffActive = false;
                 }
 
@@ -225,6 +225,7 @@ namespace IsaacS.SpeedyPaths {
                     newBoost.millisecondsDuration = 0;
                     //Add the buff, which the display will already remove the old one and add this one:
                     Game1.buffsDisplay.addOtherBuff(newBoost);
+                    currentBuff = newBoost;
                 //If we are not showing status effects to the player, we have to manage the boosts in a different way:
                 } else if (currentBuff != newBoost) {
                     if (currentBuff != null) {
@@ -232,8 +233,8 @@ namespace IsaacS.SpeedyPaths {
                         Game1.player.buffs.Remove(currentBuff);
                     }
                     
-                    newBoost.addBuff();
                     Game1.player.buffs.Add(newBoost);
+                    newBoost.addBuff();
                     currentBuff = newBoost;
                 }
             }
@@ -268,7 +269,7 @@ namespace IsaacS.SpeedyPaths {
             var worldLocation = Game1.player.currentLocation;
 
             //The Bathhouse gets its own boost because of how SLOW you walk in it:
-            if (worldLocation.name.StartsWith("BathHouse", StringComparison.Ordinal)) //RECS0063
+            if (worldLocation.name.ToString().StartsWith("BathHouse", StringComparison.Ordinal)) //RECS0063
                 return bathHouseBuff;
 
             //We don't make any indoor or farm map-paths fast:
@@ -308,7 +309,7 @@ namespace IsaacS.SpeedyPaths {
                     if (tile == pathId)
                         return dirtPathBuff;
                 }
-            } else if (worldLocation.name.StartsWith("Beach", StringComparison.Ordinal)) {
+            } else if (worldLocation.name.ToString().StartsWith("Beach", StringComparison.Ordinal)) {
                 foreach (int dockId in dockIds) {
                     if (tile == dockId)
                         return dockBuff;
@@ -327,6 +328,11 @@ namespace IsaacS.SpeedyPaths {
             var worldLocation = Game1.player.currentLocation;
             var playerVec = Game1.player.getTileLocation();
             var playerLocation = playerVec.ToPoint();
+
+            if (worldLocation == null)
+                return;
+            
+            this.Monitor.Log($"Location name: {worldLocation.name.Get()}");
 
             if (Game1.player.currentLocation.terrainFeatures.ContainsKey(playerVec)) {
                 var tile = worldLocation.terrainFeatures[playerVec];

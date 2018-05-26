@@ -42,29 +42,40 @@ namespace IsaacS.FriendsForever {
 
         /// <summary>Start the day out by 'talking' to every NPC that we don't want friendship decay for.</summary>
         private void StartDay(object sender, EventArgs e) {
+            //This is a host-only mod:
+            if (!Context.IsMainPlayer)
+                return;
+            
             animalFriendships.Clear();
         
             var farmers = Game1.getAllFarmers();
-            var npcs = Utility.getAllCharacters().Distinct();
+            var npcs = Utility.getAllCharacters();
 
             foreach (NPC character in npcs) {
                 if (!character.isVillager() && !character.IsMonster)
                     continue;
 
                 foreach (Farmer farmer in farmers) {
+                    if (!farmer.friendshipData.ContainsKey(character.getName()))
+                        continue;
+                    
+                    var friendship = farmer.friendshipData[character.getName()];
+
                     if (farmer.spouse == character.name && !config.AffectSpouses) {
                         continue;
                     //If the they are 'dating' and we're not to affect dates, skip them. The exception to this is if
                     //the farmer has a spouse, in which case we want to treat them like everyone else:
-                    } else if (character.datingFarmer && !config.AffectDates && farmer.spouse == null) {
+                    } else if (friendship.Status == FriendshipStatus.Dating && !config.AffectDates && farmer.spouse == null) {
                         continue;
                     } else if (!config.AffectEveryoneElse) {
                         continue;
                     }
 
+                    
+
                     //Set the flag for having talked to that character, but don't add any points.
                     //The player can talk to the person themselves and still get the 20 points.
-                    farmer.talkToFriend(character, 0);
+                    friendship.TalkedToToday = true;
                 }
             }
         }
@@ -76,23 +87,31 @@ namespace IsaacS.FriendsForever {
             //Player can't move if they select yes to the sleep dialog:
             if (Context.CanPlayerMove)
                 return;
-            //The sleep dialog box is of DialogBox:
-            if (!(e.PriorMenu is DialogueBox))
+
+            //The sleep dialog box is of DialogBox in singleplayer but ReadyCheckDialog in multiplayer:
+            if (!(e.PriorMenu is DialogueBox || e.PriorMenu is ReadyCheckDialog))
                 return;
                 
             var player = Game1.player;
             //To prevent error messages during the launch screen:
             if (player.currentLocation == null)
                 return;
-            //Of course the bed is in the FarmHouse location:
-            if (player.currentLocation.name != "FarmHouse")
-                return;
 
-            var bedLocation = (player.currentLocation as FarmHouse).getBedSpot();
+            Microsoft.Xna.Framework.Point bedLocation;
+            //Of course the bed is in the FarmHouse location:
+            if (player.currentLocation.name == "FarmHouse") {
+                bedLocation = (player.currentLocation as FarmHouse).getBedSpot();
+            } else if (player.currentLocation.name == "Cabin") {
+                bedLocation = (player.currentLocation as Cabin).getBedSpot();
+            } else {
+                return;
+            }
+            
             //The bed location is in number of tiles where-as player position is pixels. 
             if (Math.Abs(bedLocation.X * Game1.tileSize - player.position.X) < Game1.tileSize
                 && Math.Abs(bedLocation.Y * Game1.tileSize - player.position.Y) < Game1.tileSize)
             {
+                animalFriendships.Clear();
                 var animals = Game1.getFarm().getAllFarmAnimals().Distinct();
                 foreach (var animal in animals) {
                     if (!animal.wasPet)
@@ -103,7 +122,7 @@ namespace IsaacS.FriendsForever {
         
         /// <summary>Before the save, we want to add any lost friendship to animals.</summary>
         private void BeforeSave(object sender, EventArgs e) {
-            if (!config.AffectAnimals)
+            if (!(config.AffectAnimals && Context.IsMainPlayer))
                 return;
         
             var animals = Game1.getFarm().getAllFarmAnimals().Distinct();
@@ -111,7 +130,7 @@ namespace IsaacS.FriendsForever {
                 if (!animalFriendships.ContainsKey(animal))
                     continue;
                 
-                animal.friendshipTowardFarmer += (10 - animalFriendships[animal] / 200);
+                animal.friendshipTowardFarmer.Set(animal.friendshipTowardFarmer.Get() + (10 - animalFriendships[animal] / 200));
             }
         }
     }

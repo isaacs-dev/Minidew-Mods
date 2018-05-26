@@ -6,5 +6,5 @@
     "UniqueID": "IsaacS.SpeedyPaths",
     "EntryDll": "SpeedyPaths.dll",
     "UpdateKeys": [],
-    "MinimumApiVersion": "1.10"
+    "MinimumApiVersion": "2.6-beta"
 }

@@ -2,7 +2,8 @@
 
 Current Version: 1.0.0
 
-Dependancies: SMAPI 1.10+
+Dependancies: SMAPI 2.6-beta+
+Note: This is a singleplayer and client-side mod.
 
 Download: Not available; to be released soon.
 
@@ -27,9 +28,11 @@ boost is 0, you will walk at vanilla speeds when off-path.
 * UnknownFloorBoost: The boost given to any unknown flooring type. This value
 should never be used by the mod unless a new version of Stardew (or a mod) adds
 a new type of flooring.
-* EnableCommand: Enables the sp_floorinfo command that prints two things: the
-flooring id (if it exists) and the tile index underneath the player. These values
-are useful for adding new speed locations to the mod.
+* EnableCommand: Enables the sp_floorinfo command that prints three things:
+  * the location name
+  * the flooring id (if it exists)
+  * the tile index underneath the player. These values are useful for adding new
+    speed locations to the mod.
 
 
 #### Other Info:

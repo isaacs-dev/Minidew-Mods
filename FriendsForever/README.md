@@ -1,13 +1,14 @@
 ﻿# Friends Forever
 
-Current Version: 1.1.1
+Current Version: 1.2.0-beta
 
-Dependancies: SMAPI 1.10+
+Dependancies: SMAPI 2.6-beta+
+Note: This is a singleplayer and host-side mod.
 
 [Download Here](https://rd.nexusmods.com/stardewvalley/mods/1738)
 
 #### Configuration:
-There are only three different true/false options in config.json:
+There are only four different true/false options in config.json:
 
 * AffectSpouses: Whether spouses will be prevented from experiencing friendship
 decay.
