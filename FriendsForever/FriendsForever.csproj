@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <EnableHarmony>true</EnableHarmony>
+    <EnableHarmony>false</EnableHarmony>
     <AssemblyName>FriendsForever</AssemblyName>
     <RootNamespace>FriendsForever</RootNamespace>
     <Version>1.5.4</Version>
